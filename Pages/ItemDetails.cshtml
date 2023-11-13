@@ -1,0 +1,63 @@
+﻿@page
+@model clothStore.Pages.ItemDetailsModel
+
+@{
+    ViewData["Title"] = "Item Details";
+}
+
+<div class="container">
+    <h1 class="mt-4">Details</h1>
+
+    <div class="card mt-4">
+        <img src="@Model.Cloth.ImageUrl" class="card-img-top cloth-image" alt="Cloth Image">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Cloth.Name</h5>
+            <p class="card-text">@Model.Cloth.Description</p>
+            <p class="card-text">Price: $@Model.Cloth.Price</p>
+            <p class="card-text">Ratings: @Model.Cloth.Ratings</p> 
+            <button onclick="addToCart('@Model.Cloth.Id', '@Model.Cloth.Name', '@Model.Cloth.Description', '@Model.Cloth.Price')" class="btn btn-primary">Add to Cart</button>
+        </div>
+    </div>    
+</div>
+
+<style>
+    /* Add a CSS style block to define the uniform size for the image */
+    .cloth-image {
+        width: 200px; /* Adjust the width as needed */
+        height: 200px; /* Adjust the height as needed */
+        object-fit: cover; /* Maintain aspect ratio and cover the entire container */
+    }
+</style>
+<!-- Add this script to your HTML file -->
+<script>
+    function addToCart(itemId, itemName, itemDescription, itemPrice) {
+        // Retrieve existing cart items from local storage or initialize an empty array
+        var cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+        // Check if the item is already in the cart
+        var existingItem = cartItems.find(item => item.id === itemId);
+
+        if (!existingItem) {
+            // If the item is not in the cart, add it with quantity 1
+            var newItem = {
+                id: itemId,
+                name: itemName,
+                description: itemDescription,
+                price: itemPrice,
+                quantity: 1
+            };
+            cartItems.push(newItem);
+        } else {
+            // If the item is already in the cart, increment its quantity
+            existingItem.quantity = (existingItem.quantity || 1) + 1;
+        }
+
+        // Update local storage with the updated cart items
+        localStorage.setItem("cartItems", JSON.stringify(cartItems));
+
+        // Log the updated cart items to the console (for testing)
+        alert("Item Added to Cart");
+        console.log("Cart Items:", cartItems);
+    }
+</script>
+

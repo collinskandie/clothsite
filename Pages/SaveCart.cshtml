@@ -1,0 +1,23 @@
+﻿@page
+@model clothStore.Pages.SaveCartModel
+
+@functions {
+    public void OnPost()
+    {
+        // Retrieve the cart items from the request
+        var cartItems = Request.Form["cartItems"];
+
+        // Process and save the cartItems to the database
+        // Implement your database update logic here
+        // Example: SaveCartToDatabase(cartItems);
+
+        // Redirect back to the checkout page or another appropriate page
+        RedirectToPage("/Checkout");
+    }
+
+    // Example method to save cart items to the database
+    private void SaveCartToDatabase(string cartItems)
+    {
+        // Implement your database update logic here
+    }
+}

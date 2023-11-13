@@ -1,0 +1,71 @@
+﻿@page
+@model clothStore.Pages.IndexModel
+
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center">Welcome to Our Cloth Store</h1>
+
+    <div class="row mt-4">
+        @foreach (var item in Model.ClothItems)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="@item.ImageUrl" class="card-img-top cloth-image" alt="Item Image">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Name</h5>
+                        <p class="card-text">@item.Description</p>
+                        <p class="card-text">Price: $@item.Price</p>
+                        <p class="card-text">Ratings: @item.Ratings</p>
+                        <button onclick="addToCart('@item.Id', '@item.Name', '@item.Description', '@item.Price')" class="btn btn-primary">Add to Cart</button>
+                        <a asp-page="./ItemDetails" asp-route-id="@item.Id" class="btn btn-link">Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Add this script to your HTML file -->
+<script>
+    function addToCart(itemId, itemName, itemDescription, itemPrice) {
+        // Retrieve existing cart items from local storage or initialize an empty array
+        var cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+        // Check if the item is already in the cart
+        var existingItem = cartItems.find(item => item.id === itemId);
+
+        if (!existingItem) {
+            // If the item is not in the cart, add it with quantity 1
+            var newItem = {
+                id: itemId,
+                name: itemName,
+                description: itemDescription,
+                price: itemPrice,
+                quantity: 1
+            };
+            cartItems.push(newItem);
+        } else {
+            // If the item is already in the cart, increment its quantity
+            existingItem.quantity = (existingItem.quantity || 1) + 1;
+        }
+
+        // Update local storage with the updated cart items
+        localStorage.setItem("cartItems", JSON.stringify(cartItems));
+
+        // Log the updated cart items to the console (for testing)
+        alert("Item Added to Cart");
+        console.log("Cart Items:", cartItems);
+    }
+</script>
+
+
+<style>
+    /* Add a CSS style block to define the uniform size for the image */
+    .cloth-image {
+        height: 200px; /* Adjust the height as needed */
+        object-fit: cover; /* Maintain aspect ratio and cover the entire container */
+    }
+</style>

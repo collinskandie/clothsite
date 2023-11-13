@@ -1,0 +1,93 @@
+﻿@page
+@model clothStore.Pages.CheckoutModel
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<h1 class="text-center">Checkout</h1>
+
+<div>
+    <h1 class="text-center">PayPal Payment Form</h1>
+    <form action="/SaveCart" method="post" target="_blank">
+        <!-- ... Your existing form fields ... -->
+        <!-- Hidden input field to store serialized cartItems -->
+        <input type="hidden" name="cartItems" id="cartItemsInput">
+
+        <div class="mb-3 row">
+            <input class="form-control" type="text" name="business" value="your-business-email@example.com" readonly>
+        </div>
+        <div class="mb-3 row">
+            <input class="form-control" type="text" name="currency_code" value="USD" readonly>
+        </div>
+        <div class="mb-3 row">
+            <input class="form-control" id="total_amount" type="text" name="amount" readonly>
+        </div>
+        <div class="mb-3 row">
+            <input class="form-control" type="text" name="return" value="http://your-return-url.com" readonly>
+        </div>
+        <div class="mb-3 row">
+            <input class="form-control" type="text" name="cancel_return" value="http://your-cancel-url.com" readonly>
+        </div>
+        <div class="mb-3 row">
+            <button type="submit" class="btn btn-primary mb-3">
+                <img src="https://www.paypalobjects.com/en_US/i/btn/btn_buynow_LG.gif" alt="PayPal - The safer, easier way to pay">
+            </button>
+        </div>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Retrieve cart items from local storage
+    var cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    var totalAmountElement = document.getElementById("total_amount");
+
+    // Make an asynchronous request to the server to send cart items
+    fetch('/api/checkout/getcartitems', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ cartItems: cartItems }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            // Handle the response data
+            console.log(data);
+
+            // Update the total_amount element using setAttribute
+            totalAmountElement.setAttribute('value', '$' + data.total.toFixed(2));
+        })
+        .catch(error => console.error('Error:', error));
+
+ 
+
+        fetch('/api/checkout/getcartitems', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ cartItems: cartItems }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response data
+                console.log(data);
+
+                // Update the total_amount element using setAttribute
+                totalAmountElement.setAttribute('value', '$' + data.total.toFixed(2));
+
+                // Update the value of the hidden input field
+                document.getElementById("cartItemsInput").setAttribute('value', JSON.stringify(data.cartItems));
+            })
+            .catch(error => console.error('Error:', error));
+
+</script>
